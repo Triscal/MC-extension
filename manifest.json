@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Copy as Markdown Link",
   "version": "1.0",
-  "permissions": ["clipboardWrite", "activeTab", "scripting", "storage", "windows"],
+  "permissions": ["clipboardWrite", "activeTab", "scripting", "storage"],
   "commands": {
     "copy-markdown": {
       "suggested_key": { "default": "Ctrl+Shift+C", "mac": "Command+Shift+C" },

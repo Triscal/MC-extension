@@ -1,14 +1,3 @@
-function showErrorPopup(message) {
-  chrome.windows.create({
-    url: chrome.runtime.getURL(`notify.html?message=${encodeURIComponent(message)}`),
-    type: "popup",
-    width: 320,
-    height: 60,
-    top: 40,
-    focused: true
-  });
-}
-
 const TOAST_FUNC = async (text, message, isError) => {
   let failed = false;
   if (text) {
@@ -62,7 +51,6 @@ chrome.commands.onCommand.addListener((command) => {
       tab.url.startsWith("chrome-extension://") ||
       tab.url.startsWith("about:")
     ) {
-      showErrorPopup("Can't copy browser internal pages.");
       return;
     }
 
