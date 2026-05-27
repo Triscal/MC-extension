@@ -20,8 +20,7 @@ function addRow(value = "") {
 
   row.appendChild(input);
   row.appendChild(btn);
-  list.appendChild(input.focus ? (list.appendChild(row), row) : row);
-  list.appendChild(row);  // ensure appended
+  list.appendChild(row);
   input.focus();
   return row;
 }

@@ -1,3 +1,16 @@
+function showErrorBadge(message) {
+  chrome.action.setBadgeText({ text: "!" });
+  chrome.action.setBadgeBackgroundColor({ color: "#c00" });
+  chrome.action.setTitle({ title: message });
+  chrome.storage.local.set({ lastError: message });
+}
+
+function clearBadge() {
+  chrome.action.setBadgeText({ text: "" });
+  chrome.action.setTitle({ title: "Copy as Markdown Link" });
+  chrome.storage.local.set({ lastError: null });
+}
+
 const TOAST_FUNC = async (text, message, isError) => {
   let failed = false;
   if (text) {
@@ -71,10 +84,14 @@ chrome.commands.onCommand.addListener((command) => {
           }).then((results) => {
         const success = results?.[0]?.result;
         if (!success) {
-          showErrorPopup("Can't copy while the URL bar is active.");
+          console.log("showing error")
+          showErrorBadge("⚠ Can't copy while the URL bar is active.");
+        } else {
+          console.log("no error")
+          clearBadge();
         }
       }).catch(() => {
-        showErrorPopup("Can't copy this page.");
+        showErrorBadge("⚠ Can't copy while the URL bar is active.");
       });
     });
   });
