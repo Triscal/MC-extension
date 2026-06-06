@@ -11,7 +11,7 @@ function clearBadge() {
   chrome.storage.local.set({ lastError: null });
 }
 
-const TOAST_FUNC = async (text: string, message:string, isError:boolean) => {
+const TOAST_FUNC = async (text: string, message: string, isError: boolean) => {
   let failed = false;
   if (text) {
     try {
@@ -59,20 +59,20 @@ chrome.commands.onCommand.addListener((command) => {
   chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     if (!tab) return;
 
-    const tabURL = tab.url ?? ""
+    const tabURL = tab.url ?? "";
 
     if (
       tabURL.startsWith("chrome://") ||
       tabURL.startsWith("chrome-extension://") ||
       tabURL.startsWith("about:")
     ) {
-      showErrorBadge("Unable to copy Chrome internal pages")
+      showErrorBadge("Unable to copy Chrome internal pages");
       return;
     }
 
     chrome.storage.sync.get({ cleanupPatterns: [] }, ({ cleanupPatterns }) => {
-       const listOfPatterns = cleanupPatterns as string[]; // cast to your type
-       
+      const listOfPatterns = cleanupPatterns as string[]; // cast to your type
+
       let title = tab.title ?? "empty title";
       for (const pattern of listOfPatterns) {
         try {
@@ -82,24 +82,25 @@ chrome.commands.onCommand.addListener((command) => {
       }
       const md = `[${title}](${tab.url})`;
 
-      const tabNumber:number = tab.id ?? 0
+      const tabNumber: number = tab.id ?? 0;
 
-      chrome.scripting.executeScript({
-        target: { tabId: tabNumber },
-        func: TOAST_FUNC,
-        args: [md, "Copied!", false]
-          }).then((results) => {
-        const success = results?.[0]?.result;
-        if (!success) {
-          
+      chrome.scripting
+        .executeScript({
+          target: { tabId: tabNumber },
+          func: TOAST_FUNC,
+          args: [md, "Copied!", false],
+        })
+        .then((results) => {
+          const success = results?.[0]?.result;
+          if (!success) {
+            showErrorBadge("⚠ Can't copy while the URL bar is active.");
+          } else {
+            clearBadge();
+          }
+        })
+        .catch(() => {
           showErrorBadge("⚠ Can't copy while the URL bar is active.");
-        } else {
-          
-          clearBadge();
-        }
-      }).catch(() => {
-        showErrorBadge("⚠ Can't copy while the URL bar is active.");
-      });
+        });
     });
   });
 });

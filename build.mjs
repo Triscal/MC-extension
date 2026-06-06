@@ -12,12 +12,7 @@ await esbuild.build({
 });
 
 // Copy static files
-const staticFiles = [
-  "icon.png",
-  "manifest.json",
-  "options.html",
-  "popup.html",
-];
+const staticFiles = ["icon.png", "manifest.json", "options.html", "popup.html"];
 
 fs.mkdirSync("dist", { recursive: true });
 

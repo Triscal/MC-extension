@@ -2,8 +2,8 @@
   "compilerOptions": {
     "allowJs": false,
     "checkJs": false,
-    "strict" : true,
+    "strict": true,
     "outDir": "./dist",
-     "target": "ES2022"
+    "target": "ES2022"
   }
 }

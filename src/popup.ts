@@ -1,6 +1,6 @@
 chrome.storage.local.get({ lastError: null }, ({ lastError }) => {
   const content = document.getElementById("content");
-  if (!content) throw new Error("Element not found")
+  if (!content) throw new Error("Element not found");
 
   if (lastError) {
     content.innerHTML = `<div class="error-box">${lastError}</div>`;
@@ -20,10 +20,9 @@ chrome.storage.local.get({ lastError: null }, ({ lastError }) => {
   }
 });
 
+const button = document.getElementById("settingsBtn");
 
-const button = document.getElementById("settingsBtn")
-
-if (!button) throw new Error("Element not found")
+if (!button) throw new Error("Element not found");
 
 button.onclick = () => {
   chrome.runtime.openOptionsPage();
