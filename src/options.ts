@@ -1,7 +1,15 @@
-const list   = document.getElementById("patternList");
-const addBtn = document.getElementById("addBtn");
-const saveBtn = document.getElementById("saveBtn");
-const saveStatus = document.getElementById("status");
+const ids = ["patternList", "addBtn", "saveBtn", "status"];
+const els = ids.map(id => document.getElementById(id));
+
+if (els.some(el => el === null)) {
+  throw new Error("Missing element");
+}
+
+const list   = document.getElementById("patternList")!;
+const addBtn = document.getElementById("addBtn")!;
+const saveBtn = document.getElementById("saveBtn")!;
+const saveStatus = document.getElementById("status")!;
+
 
 function addRow(value = "") {
   const row = document.createElement("div");
@@ -28,8 +36,7 @@ function addRow(value = "") {
 // Load saved patterns
 chrome.storage.sync.get({ cleanupPatterns: [] }, ({ rawCleanupPatterns }) => {
    const listOfPatterns = rawCleanupPatterns as string[]; // cast to your type
-   console.log
-  if (listOfPatterns.length === 0) {
+  if (listOfPatterns === undefined) {
     addRow();
   } else {
     listOfPatterns.forEach(p => addRow(p));

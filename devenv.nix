@@ -18,6 +18,7 @@
   packages = [
     pkgs.esbuild
     pkgs.typescript
+    pkgs.prettier
   ];
 
   # run via command `devenv tasks run xtn:build`

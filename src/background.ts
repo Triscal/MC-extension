@@ -59,18 +59,21 @@ chrome.commands.onCommand.addListener((command) => {
   chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     if (!tab) return;
 
+    const tabURL = tab.url ?? ""
+
     if (
-      tab.url.startsWith("chrome://") ||
-      tab.url.startsWith("chrome-extension://") ||
-      tab.url.startsWith("about:")
+      tabURL.startsWith("chrome://") ||
+      tabURL.startsWith("chrome-extension://") ||
+      tabURL.startsWith("about:")
     ) {
+      showErrorBadge("Unable to copy Chrome internal pages")
       return;
     }
 
     chrome.storage.sync.get({ cleanupPatterns: [] }, ({ cleanupPatterns }) => {
        const listOfPatterns = cleanupPatterns as string[]; // cast to your type
        
-      let title = tab.title;
+      let title = tab.title ?? "empty title";
       for (const pattern of listOfPatterns) {
         try {
           const escaped = pattern.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -79,8 +82,10 @@ chrome.commands.onCommand.addListener((command) => {
       }
       const md = `[${title}](${tab.url})`;
 
+      const tabNumber:number = tab.id ?? 0
+
       chrome.scripting.executeScript({
-        target: { tabId: tab.id },
+        target: { tabId: tabNumber },
         func: TOAST_FUNC,
         args: [md, "Copied!", false]
           }).then((results) => {
