@@ -1,7 +1,7 @@
 const list   = document.getElementById("patternList");
 const addBtn = document.getElementById("addBtn");
 const saveBtn = document.getElementById("saveBtn");
-const status = document.getElementById("status");
+const saveStatus = document.getElementById("status");
 
 function addRow(value = "") {
   const row = document.createElement("div");
@@ -26,11 +26,13 @@ function addRow(value = "") {
 }
 
 // Load saved patterns
-chrome.storage.sync.get({ cleanupPatterns: [] }, ({ cleanupPatterns }) => {
-  if (cleanupPatterns.length === 0) {
+chrome.storage.sync.get({ cleanupPatterns: [] }, ({ rawCleanupPatterns }) => {
+   const listOfPatterns = rawCleanupPatterns as string[]; // cast to your type
+   console.log
+  if (listOfPatterns.length === 0) {
     addRow();
   } else {
-    cleanupPatterns.forEach(p => addRow(p));
+    listOfPatterns.forEach(p => addRow(p));
   }
 });
 
@@ -42,7 +44,7 @@ saveBtn.addEventListener("click", () => {
     .filter(Boolean);
 
   chrome.storage.sync.set({ cleanupPatterns: patterns }, () => {
-    status.textContent = "Saved!";
-    setTimeout(() => status.textContent = "", 2000);
+    saveStatus.textContent = "Saved!";
+    setTimeout(() => saveStatus.textContent = "", 2000);
   });
 });

@@ -1,4 +1,4 @@
-function showErrorBadge(message) {
+function showErrorBadge(message: string) {
   chrome.action.setBadgeText({ text: "!" });
   chrome.action.setBadgeBackgroundColor({ color: "#c00" });
   chrome.action.setTitle({ title: message });
@@ -11,7 +11,7 @@ function clearBadge() {
   chrome.storage.local.set({ lastError: null });
 }
 
-const TOAST_FUNC = async (text, message, isError) => {
+const TOAST_FUNC = async (text: string, message:string, isError:boolean) => {
   let failed = false;
   if (text) {
     try {
@@ -68,8 +68,10 @@ chrome.commands.onCommand.addListener((command) => {
     }
 
     chrome.storage.sync.get({ cleanupPatterns: [] }, ({ cleanupPatterns }) => {
+       const listOfPatterns = cleanupPatterns as string[]; // cast to your type
+       
       let title = tab.title;
-      for (const pattern of cleanupPatterns) {
+      for (const pattern of listOfPatterns) {
         try {
           const escaped = pattern.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
           title = title.replace(new RegExp(escaped + "\\s*$", "gi"), "").trim();
@@ -78,16 +80,16 @@ chrome.commands.onCommand.addListener((command) => {
       const md = `[${title}](${tab.url})`;
 
       chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      func: TOAST_FUNC,
-      args: [md, "Copied!", false]
+        target: { tabId: tab.id },
+        func: TOAST_FUNC,
+        args: [md, "Copied!", false]
           }).then((results) => {
         const success = results?.[0]?.result;
         if (!success) {
-          console.log("showing error")
+          
           showErrorBadge("⚠ Can't copy while the URL bar is active.");
         } else {
-          console.log("no error")
+          
           clearBadge();
         }
       }).catch(() => {
