@@ -10,3 +10,4 @@ devenv.local.yaml
 
 dist/
 node_modules/
+.direnv/
