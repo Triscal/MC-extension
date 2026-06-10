@@ -39,6 +39,4 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable
 
-      - run: nix develop --command pnpm install
-
       - run: nix develop --command pnpm check-format
