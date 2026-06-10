@@ -11,7 +11,7 @@ function clearBadge() {
   chrome.storage.local.set({ lastError: null });
 }
 
-const TOAST_FUNC = async (text: string, message: string, isError: boolean) => {
+const TOAST_FUNC = async (text: string, message: string) => {
   let failed = false;
   if (text) {
     try {
@@ -31,15 +31,16 @@ const TOAST_FUNC = async (text: string, message: string, isError: boolean) => {
   toast.id = "__md-copy-toast__";
   toast.textContent = message;
   toast.style.cssText = `
-    position: fixed; bottom: 24px;
+    position: fixed; top: 24px;
     left: 50%; transform: translateX(-50%);
-    background: ${isError ? "#c00" : isDark ? "#fff" : "#333"};
-    color: ${isError ? "#fff" : isDark ? "#333" : "#fff"};
+    background: ${isDark ? "#fff" : "#333"};
+    color: ${isDark ? "#333" : "#fff"};
     padding: 10px 18px; border-radius: 8px;
     font-size: 14px; font-family: sans-serif;
     z-index: 999999; opacity: 0;
     transition: opacity 0.15s ease;
     pointer-events: none;
+    border: 1px solid ${isDark ? "#333" : "#000"};
   `;
   document.body.appendChild(toast);
   requestAnimationFrame(() => {
