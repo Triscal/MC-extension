@@ -4,8 +4,8 @@ jobs:
   audit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v5
         with:
           version: latest
       - run: pnpm audit --audit-level=high
@@ -13,7 +13,7 @@ jobs:
   nix-audit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: cachix/install-nix-action@v27
       - run: nix flake check
       - run: nix-shell -p vulnix --run "vulnix --flake ."
