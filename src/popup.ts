@@ -27,3 +27,15 @@ if (!button) throw new Error("Element not found");
 button.onclick = () => {
   chrome.runtime.openOptionsPage();
 };
+
+chrome.commands.getAll((commands) => {
+  const cmd = commands.find((c) => c.name === "copy-markdown");
+  const hasShortcut = cmd && cmd.shortcut;
+  const setup = document.getElementById("setup");
+  if (!setup) return;
+  setup.style.display = hasShortcut ? "none" : "block";
+});
+
+document.getElementById("shortcutBtn").onclick = () => {
+  chrome.tabs.create({ url: "chrome://extensions/shortcuts" });
+};

@@ -94,12 +94,51 @@
           background: #2a2a2a;
         }
       }
+
+      .setup-box {
+        background: #fff8e1;
+        border: 1px solid #ffe082;
+        border-radius: 8px;
+        padding: 10px 12px;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+      .setup-box strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+      .setup-box ol {
+        padding-left: 16px;
+        margin: 6px 0;
+      }
+      @media (prefers-color-scheme: dark) {
+        .setup-box {
+          background: #2a2500;
+          border-color: #665500;
+          color: #f0f0f0;
+        }
+      }
     </style>
   </head>
   <body>
     <h2>MC* - Markdown Copy</h2>
     <div id="content"></div>
     <hr />
+    <div id="setup" style="display: none; margin-top: 12px">
+      <div class="setup-box">
+        <strong>No shortcut set</strong>
+        <p>To enable the copy shortcut:</p>
+        <ol>
+          <li>Click the button below</li>
+          <li>Find "MC* - Markdown Copy"</li>
+          <li>
+            Click the box next to "Copy page as markdown link" and press your
+            shortcut
+          </li>
+        </ol>
+        <button class="settings-btn" id="shortcutBtn">⌨ Set Shortcut</button>
+      </div>
+    </div>
     <button class="settings-btn" id="settingsBtn">⚙ Settings</button>
     <script src="popup.js"></script>
   </body>

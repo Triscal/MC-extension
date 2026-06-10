@@ -3,16 +3,15 @@ import * as esbuild from "esbuild";
 import * as fs from "fs";
 import * as path from "path";
 
-const watch = process.argv.includes('--watch');
-
+const watch = process.argv.includes("--watch");
 
 // Compile TS entry points
 const ctx = await esbuild.context({
   entryPoints: ["src/popup.ts", "src/options.ts", "src/background.ts"],
   bundle: true,
   outdir: "dist",
-  platform: 'browser',
-  target: 'chrome140',
+  platform: "browser",
+  target: "chrome140",
 });
 
 // Copy static files
@@ -25,7 +24,13 @@ for (const file of staticFiles) {
   console.log(`Copied ${file} → dist/`);
 }
 
-const icons = ["icons/icon.png","icons/icon128.png", "icons/icon16.png", "icons/icon32.png", "icons/icon48.png"]
+const icons = [
+  "icons/icon.png",
+  "icons/icon128.png",
+  "icons/icon16.png",
+  "icons/icon32.png",
+  "icons/icon48.png",
+];
 
 fs.mkdirSync("dist/icons", { recursive: true });
 
@@ -38,7 +43,7 @@ console.log("Build complete.");
 
 if (watch) {
   await ctx.watch();
-  console.log('Watching...');
+  console.log("Watching...");
 } else {
   await ctx.rebuild();
   await ctx.dispose();
