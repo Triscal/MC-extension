@@ -19,5 +19,5 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
       - run: nix flake check
-      - run: nix build .#
+      - run: nix build .#devShells.x86_64-linux.default
       - run: nix run nixpkgs#vulnix -- ./result
