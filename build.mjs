@@ -49,16 +49,11 @@ if (watch) {
   await ctx.dispose();
 }
 
-
-const output = fs.createWriteStream('dist/archive.zip')
+const output = fs.createWriteStream("dist/archive.zip");
 const archive = new ZipArchive({
   zlib: { level: 9 }, // Sets the compression level.
 });
 
-archive.pipe(output)
-archive.directory('dist/output', false)
-await archive.finalize()
-
-
-
-
+archive.pipe(output);
+archive.directory("dist/output", false);
+await archive.finalize();

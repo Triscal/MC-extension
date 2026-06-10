@@ -10,9 +10,10 @@ Once you have all the necessary dependencies you can use `node build.mjs` to bui
 
 That will create a `dist` folder with everything you need to use the extension.
 
-
 ### CI Building
-Any new commit will cause a GitHub action to run which will check the formatting, for cve's in the Flake, and pnpm modiules, and build the extension. You can download it from the artifacts. 
+
+Any new commit will cause a GitHub action to run which will check the formatting, for cve's in the Flake, and pnpm modiules, and build the extension. You can download it from the artifacts.
 
 ## Releases
-Releases also contain a build of the extension and can be downloaded directly and should be considered "stable". 
+
+Releases also contain a build of the extension and can be downloaded directly and should be considered "stable".
