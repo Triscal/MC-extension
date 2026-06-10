@@ -3,12 +3,16 @@ import * as esbuild from "esbuild";
 import * as fs from "fs";
 import * as path from "path";
 
+const watch = process.argv.includes('--watch');
+
+
 // Compile TS entry points
-await esbuild.build({
+const ctx = await esbuild.context({
   entryPoints: ["src/popup.ts", "src/options.ts", "src/background.ts"],
   bundle: true,
   outdir: "dist",
-  target: "ES2022",
+  platform: 'browser',
+  target: 'chrome140',
 });
 
 // Copy static files
@@ -31,3 +35,11 @@ for (const icon of icons) {
 }
 
 console.log("Build complete.");
+
+if (watch) {
+  await ctx.watch();
+  console.log('Watching...');
+} else {
+  await ctx.rebuild();
+  await ctx.dispose();
+}

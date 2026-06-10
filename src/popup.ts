@@ -10,7 +10,7 @@ chrome.storage.local.get({ lastError: null }, ({ lastError }) => {
     btn.onclick = () => {
       chrome.storage.local.set({ lastError: null });
       chrome.action.setBadgeText({ text: "" });
-      chrome.action.setTitle({ title: "Copy as Markdown Link" });
+      chrome.action.setTitle({ title: "MC* - Markdown Copy" });
       content.innerHTML = `<p class="no-error">No recent errors.</p>`;
       btn.remove();
     };

@@ -7,7 +7,7 @@ function showErrorBadge(message: string) {
 
 function clearBadge() {
   chrome.action.setBadgeText({ text: "" });
-  chrome.action.setTitle({ title: "Copy as Markdown Link" });
+  chrome.action.setTitle({ title: "MC* - Markdown Copy" });
   chrome.storage.local.set({ lastError: null });
 }
 
@@ -88,18 +88,18 @@ chrome.commands.onCommand.addListener((command) => {
         .executeScript({
           target: { tabId: tabNumber },
           func: TOAST_FUNC,
-          args: [md, "Copied!", false],
+          args: [md, "✅ Copied!", false],
         })
         .then((results) => {
           const success = results?.[0]?.result;
           if (!success) {
-            showErrorBadge("⚠ Can't copy while the URL bar is active.");
+            showErrorBadge("⚠️ Can't copy while the URL bar is active.");
           } else {
             clearBadge();
           }
         })
         .catch(() => {
-          showErrorBadge("⚠ Can't copy while the URL bar is active.");
+          showErrorBadge("⚠️ Can't copy while the URL bar is active.");
         });
     });
   });

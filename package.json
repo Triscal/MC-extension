@@ -4,6 +4,8 @@
     "esbuild": "^0.28.0"
   },
   "scripts": {
-    "build": "node build.mjs"
+    "build": "node build.mjs",
+    "dev": "node build.mjs --watch",
+    "typecheck": "tsc --noEmit"
   }
 }
