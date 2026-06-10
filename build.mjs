@@ -1,5 +1,6 @@
 // build.mjs
 import * as esbuild from "esbuild";
+import { ZipArchive } from "archiver";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -9,7 +10,7 @@ const watch = process.argv.includes("--watch");
 const ctx = await esbuild.context({
   entryPoints: ["src/popup.ts", "src/options.ts", "src/background.ts"],
   bundle: true,
-  outdir: "dist",
+  outdir: "dist/output",
   platform: "browser",
   target: "chrome140",
 });
@@ -17,10 +18,10 @@ const ctx = await esbuild.context({
 // Copy static files
 const staticFiles = ["manifest.json", "options.html", "popup.html"];
 
-fs.mkdirSync("dist", { recursive: true });
+fs.mkdirSync("dist/output", { recursive: true });
 
 for (const file of staticFiles) {
-  fs.copyFileSync(file, path.join("dist", path.basename(file)));
+  fs.copyFileSync(file, path.join("dist/output", path.basename(file)));
   console.log(`Copied ${file} → dist/`);
 }
 
@@ -32,15 +33,14 @@ const icons = [
   "icons/icon48.png",
 ];
 
-fs.mkdirSync("dist/icons", { recursive: true });
+fs.mkdirSync("dist/output/icons", { recursive: true });
 
 for (const icon of icons) {
-  fs.copyFileSync(icon, path.join("dist/icons", path.basename(icon)));
-  console.log(`Copied ${icon} → dist/icons`);
+  fs.copyFileSync(icon, path.join("dist/output/icons", path.basename(icon)));
+  console.log(`Copied ${icon} → dist/output/icons`);
 }
 
 console.log("Build complete.");
-
 if (watch) {
   await ctx.watch();
   console.log("Watching...");
@@ -48,3 +48,17 @@ if (watch) {
   await ctx.rebuild();
   await ctx.dispose();
 }
+
+
+const output = fs.createWriteStream('dist/archive.zip')
+const archive = new ZipArchive({
+  zlib: { level: 9 }, // Sets the compression level.
+});
+
+archive.pipe(output)
+archive.directory('dist/output', false)
+await archive.finalize()
+
+
+
+
