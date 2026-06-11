@@ -81,7 +81,7 @@ chrome.commands.onCommand.addListener((command) => {
           title = title.replace(new RegExp(escaped + "\\s*$", "gi"), "").trim();
         } catch (e) {}
       }
-      const md = `[${title}](${tab.url})`;
+      const md = `[${title}](${tabURL})`;
 
       const tabNumber: number = tab.id ?? 0;
 
@@ -89,7 +89,7 @@ chrome.commands.onCommand.addListener((command) => {
         .executeScript({
           target: { tabId: tabNumber },
           func: TOAST_FUNC,
-          args: [md, "✅ Copied!", false],
+          args: [md, "✅ Copied!"],
         })
         .then((results) => {
           const success = results?.[0]?.result;

@@ -20,11 +20,11 @@ chrome.storage.local.get({ lastError: null }, ({ lastError }) => {
   }
 });
 
-const button = document.getElementById("settingsBtn");
+const settingsButton = document.getElementById("settingsBtn");
 
-if (!button) throw new Error("Element not found");
+if (!settingsButton) throw new Error("Element not found");
 
-button.onclick = () => {
+settingsButton.onclick = () => {
   chrome.runtime.openOptionsPage();
 };
 
@@ -36,6 +36,10 @@ chrome.commands.getAll((commands) => {
   setup.style.display = hasShortcut ? "none" : "block";
 });
 
-document.getElementById("shortcutBtn").onclick = () => {
+const shortcutSettingButton = document.getElementById("shortcutBtn");
+
+if (!shortcutSettingButton) throw new Error("Element not found");
+
+shortcutSettingButton.onclick = () => {
   chrome.tabs.create({ url: "chrome://extensions/shortcuts" });
 };
