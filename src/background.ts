@@ -57,7 +57,7 @@ const TOAST_FUNC = async (text: string, message: string) => {
 chrome.commands.onCommand.addListener((command) => {
   if (command !== "copy-markdown") return;
 
-   copyURLandTitle()
+  copyURLandTitle();
 });
 
 function copyURLandTitle() {

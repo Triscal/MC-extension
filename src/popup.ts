@@ -1,16 +1,15 @@
 chrome.storage.local.get({ lastError: null }, ({ lastError }) => {
-
   if (lastError) {
-    setMessage(`${lastError}`, true)
+    setMessage(`${lastError}`, true);
   } else {
     setMessage(`No recent errors.`, false);
   }
 });
 
-function setMessage(message:string, isError:Boolean) {
-    const content = document.getElementById("content");
-    if (!content) throw new Error("Element not found");
-    if (isError) {
+function setMessage(message: string, isError: Boolean) {
+  const content = document.getElementById("content");
+  if (!content) throw new Error("Element not found");
+  if (isError) {
     content.innerHTML = `<div class="error-box">${message}</div>`;
     const button = document.createElement("button");
     button.className = "secondary-button";
@@ -57,9 +56,6 @@ const copyButton = document.getElementById("copyButton");
 if (!copyButton) throw new Error("Element not found");
 
 copyButton.onclick = () => {
-  window.close()
-  chrome.runtime.sendMessage({action: "copyURLandTitle"}, (response) => {
-});
+  window.close();
+  chrome.runtime.sendMessage({ action: "copyURLandTitle" }, (response) => {});
 };
-
-
