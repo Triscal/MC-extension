@@ -46,8 +46,9 @@
         font-size: 13px;
         color: #888;
       }
-      .clear-btn {
+      .main-button {
         margin-top: 12px;
+        margin-bottom: 12px;
         width: 100%;
         padding: 8px;
         border: none;
@@ -57,21 +58,22 @@
         cursor: pointer;
       }
       #content {
+        padding-top: 10px;
         padding-bottom: 10px;
       }
-      .clear-btn:hover {
+      .main-button:hover {
         background: #ddd;
       }
       @media (prefers-color-scheme: dark) {
-        .clear-btn {
+        .main-button {
           background: #333;
           color: #f0f0f0;
         }
-        .clear-btn:hover {
+        .main-button:hover {
           background: #444;
         }
       }
-      .settings-btn {
+      .secondary-button {
         margin-top: 8px;
         width: 100%;
         padding: 8px;
@@ -83,14 +85,14 @@
         color: #555;
         text-align: left;
       }
-      .settings-btn:hover {
+      .secondary-button:hover {
         background: #f0f0f0;
       }
       @media (prefers-color-scheme: dark) {
-        .settings-btn {
+        .secondary-button {
           color: #aaa;
         }
-        .settings-btn:hover {
+        .secondary-button:hover {
           background: #2a2a2a;
         }
       }
@@ -122,6 +124,8 @@
   </head>
   <body>
     <h2>MC* - Markdown Copy</h2>
+    <button class="main-button" id="copyButton">Copy page Title and URL</button>
+    <hr />
     <div id="content"></div>
     <hr />
     <div id="setup" style="display: none; margin-top: 12px">
@@ -136,10 +140,10 @@
             shortcut
           </li>
         </ol>
-        <button class="settings-btn" id="shortcutBtn">⌨ Set Shortcut</button>
+        <button class="secondary-button" id="shortcutButton">⌨ Set Shortcut</button>
       </div>
     </div>
-    <button class="settings-btn" id="settingsBtn">⚙ Settings</button>
+    <button class="secondary-button" id="settingsButton">⚙ Settings</button>
     <script src="popup.js"></script>
   </body>
 </html>
