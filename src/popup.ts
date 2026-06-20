@@ -13,7 +13,7 @@ function setMessage(message:string, isError:Boolean) {
     if (isError) {
     content.innerHTML = `<div class="error-box">${message}</div>`;
     const button = document.createElement("button");
-    button.className = "main-button";
+    button.className = "secondary-button";
     button.textContent = "Clear";
     button.onclick = () => {
       chrome.storage.local.set({ lastError: null });
