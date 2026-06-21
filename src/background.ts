@@ -114,13 +114,13 @@ async function copyURLandTitle() {
       .then((results) => {
         const success = results?.[0]?.result;
         if (!success) {
-          showErrorBadge("⚠️ Can't copy while the webs address is being edited. Please click somewhere on the page and try again.");
+          showErrorBadge("⚠️ Can't copy while the web address is being edited. Please click somewhere on the page and try again.");
         } else {
           clearBadge();
         }
       })
       .catch(() => {
-        showErrorBadge("⚠️ Can't copy while the webs address is being edited. Please click somewhere on the page and try again.");
+        showErrorBadge("⚠️ Can't copy while the web address is being edited. Please click somewhere on the page and try again.");
       });
   });
 }
