@@ -34,7 +34,8 @@ function addRow(value = "") {
 
 async function loadPatterns() {
   const rawPatterns = await chrome.storage.local.get("cleanupPatterns");
-  if (rawPatterns !== undefined) {
+
+  if (Object.keys(rawPatterns).length !== 0) {
     const patternArray = rawPatterns.cleanupPatterns as string[];
 
     patternArray.forEach((p) => addRow(p));

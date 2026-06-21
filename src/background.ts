@@ -62,7 +62,7 @@ chrome.commands.onCommand.addListener((command) => {
 
 async function loadPatternsAsync(): Promise<string[]> {
   const rawPatterns = await chrome.storage.local.get("cleanupPatterns");
-  if (rawPatterns !== undefined) {
+  if (Object.keys(rawPatterns).length !== 0) {
     const patternArray = rawPatterns.cleanupPatterns as string[];
 
     return patternArray;
