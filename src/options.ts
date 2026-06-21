@@ -32,15 +32,17 @@ function addRow(value = "") {
   return row;
 }
 
-// Load saved patterns
-chrome.storage.sync.get({ cleanupPatterns: [] }, ({ rawCleanupPatterns }) => {
-  const listOfPatterns = rawCleanupPatterns as string[]; // cast to your type
-  if (listOfPatterns === undefined) {
-    addRow();
-  } else {
-    listOfPatterns.forEach((p) => addRow(p));
+async function loadPatterns() {
+  const rawPatterns = await chrome.storage.local.get("cleanupPatterns");
+  if (rawPatterns !== undefined) {
+    const patternArray = rawPatterns.cleanupPatterns as string[];
+
+    patternArray.forEach((p) => addRow(p));
   }
-});
+  addRow();
+}
+
+loadPatterns();
 
 addbutton.addEventListener("click", () => addRow());
 
@@ -49,7 +51,9 @@ savebutton.addEventListener("click", () => {
     .map((i) => i.value.trim())
     .filter(Boolean);
 
-  chrome.storage.sync.set({ cleanupPatterns: patterns }, () => {
+  console.log(patterns);
+
+  chrome.storage.local.set({ cleanupPatterns: patterns }, () => {
     saveStatus.textContent = "Saved!";
     setTimeout(() => (saveStatus.textContent = ""), 2000);
   });
