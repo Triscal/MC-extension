@@ -1,4 +1,4 @@
-const ids = ["patternList", "addBtn", "saveBtn", "status"];
+const ids = ["patternList", "addbutton", "savebutton", "status"];
 const els = ids.map((id) => document.getElementById(id));
 
 if (els.some((el) => el === null)) {
@@ -6,8 +6,8 @@ if (els.some((el) => el === null)) {
 }
 
 const list = document.getElementById("patternList")!;
-const addBtn = document.getElementById("addBtn")!;
-const saveBtn = document.getElementById("saveBtn")!;
+const addbutton = document.getElementById("addbutton")!;
+const savebutton = document.getElementById("savebutton")!;
 const saveStatus = document.getElementById("status")!;
 
 function addRow(value = "") {
@@ -19,14 +19,14 @@ function addRow(value = "") {
   input.placeholder = "e.g.  - YouTube";
   input.value = value;
 
-  const btn = document.createElement("button");
-  btn.className = "remove-btn";
-  btn.textContent = "×";
-  btn.title = "Remove";
-  btn.onclick = () => row.remove();
+  const button = document.createElement("button");
+  button.className = "remove-button";
+  button.textContent = "×";
+  button.title = "Remove";
+  button.onclick = () => row.remove();
 
   row.appendChild(input);
-  row.appendChild(btn);
+  row.appendChild(button);
   list.appendChild(row);
   input.focus();
   return row;
@@ -42,9 +42,9 @@ chrome.storage.sync.get({ cleanupPatterns: [] }, ({ rawCleanupPatterns }) => {
   }
 });
 
-addBtn.addEventListener("click", () => addRow());
+addbutton.addEventListener("click", () => addRow());
 
-saveBtn.addEventListener("click", () => {
+savebutton.addEventListener("click", () => {
   const patterns = [...list.querySelectorAll("input")]
     .map((i) => i.value.trim())
     .filter(Boolean);
