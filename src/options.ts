@@ -44,17 +44,25 @@ async function loadPatterns() {
 
 loadPatterns();
 
-addbutton.addEventListener("click", () => addRow());
+addbutton.onclick = () => {
+  addRow();
+};
 
-savebutton.addEventListener("click", () => {
+savebutton.onclick = () => {
   const patterns = [...list.querySelectorAll("input")]
     .map((i) => i.value.trim())
     .filter(Boolean);
-
-  console.log(patterns);
 
   chrome.storage.local.set({ cleanupPatterns: patterns }, () => {
     saveStatus.textContent = "Saved!";
     setTimeout(() => (saveStatus.textContent = ""), 2000);
   });
-});
+};
+
+const shortcutButton = document.getElementById("shortcutButton");
+
+if (!shortcutButton) throw new Error("Element not found");
+
+shortcutButton.onclick = () => {
+  chrome.tabs.create({ url: "chrome://extensions/shortcuts" });
+};

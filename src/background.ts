@@ -60,53 +60,68 @@ chrome.commands.onCommand.addListener((command) => {
   copyURLandTitle();
 });
 
-function copyURLandTitle() {
+async function loadPatternsAsync(): Promise<string[]> {
+  const rawPatterns = await chrome.storage.local.get("cleanupPatterns");
+  if (rawPatterns !== undefined) {
+    const patternArray = rawPatterns.cleanupPatterns as string[];
+
+    return patternArray;
+  }
+
+  return [];
+}
+
+async function copyURLandTitle() {
+  const listOfPatterns = await loadPatternsAsync();
+
+  console.log(listOfPatterns);
+
+  let title = "empty title";
+
   chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     if (!tab) return;
 
     const tabURL = tab.url ?? "";
+
+    const tabNumber = tab.id ?? 0;
 
     if (
       tabURL.startsWith("chrome://") ||
       tabURL.startsWith("chrome-extension://") ||
       tabURL.startsWith("about:")
     ) {
-      showErrorBadge("Unable to copy Chrome internal pages");
+      showErrorBadge(
+        "Unable to copy browser settings and other internal pages",
+      );
       return;
     }
+    // cast to your type
 
-    chrome.storage.sync.get({ cleanupPatterns: [] }, ({ cleanupPatterns }) => {
-      const listOfPatterns = cleanupPatterns as string[]; // cast to your type
+    for (const pattern of listOfPatterns) {
+      try {
+        const escaped = pattern.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        title = title.replace(new RegExp(escaped + "\\s*$", "gi"), "").trim();
+      } catch (e) {}
+    }
+    const md = `[${title}](${tabURL})`;
 
-      let title = tab.title ?? "empty title";
-      for (const pattern of listOfPatterns) {
-        try {
-          const escaped = pattern.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-          title = title.replace(new RegExp(escaped + "\\s*$", "gi"), "").trim();
-        } catch (e) {}
-      }
-      const md = `[${title}](${tabURL})`;
-
-      const tabNumber: number = tab.id ?? 0;
-
-      chrome.scripting
-        .executeScript({
-          target: { tabId: tabNumber },
-          func: TOAST_FUNC,
-          args: [md, "✅ Copied!"],
-        })
-        .then((results) => {
-          const success = results?.[0]?.result;
-          if (!success) {
-            showErrorBadge("⚠️ Can't copy while the URL bar is active.");
-          } else {
-            clearBadge();
-          }
-        })
-        .catch(() => {
+    chrome.scripting
+      .executeScript({
+        target: { tabId: tabNumber },
+        func: TOAST_FUNC,
+        args: [md, "✅ Copied!"],
+      })
+      .then((results) => {
+        const success = results?.[0]?.result;
+        if (!success) {
           showErrorBadge("⚠️ Can't copy while the URL bar is active.");
-        });
-    });
+        } else {
+          clearBadge();
+        }
+      })
+      .catch(() => {
+        showErrorBadge("⚠️ Can't copy while the URL bar is active.");
+      });
   });
 }
 

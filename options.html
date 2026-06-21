@@ -58,6 +58,7 @@
         border: 1px solid #e0e0e0;
         border-radius: 12px;
         padding: 24px;
+        margin-bottom: 20px;
       }
 
       .card h2 {
@@ -66,16 +67,22 @@
         margin-bottom: 4px;
         color: #000;
       }
-      .card p {
+      .card p,
+      .card li {
         font-size: 13px;
         color: #666;
         margin-bottom: 16px;
       }
 
       @media (prefers-color-scheme: dark) {
-        .card p {
+        .card p,
+        .card li {
           color: #aaa;
         }
+      }
+
+      .card li {
+        margin-left: 12px;
       }
 
       .pattern-list {
@@ -149,7 +156,7 @@
         }
       }
 
-      .save-button {
+      .primary-button {
         background: #111;
         color: #fff;
         border: none;
@@ -160,16 +167,16 @@
         width: 100%;
       }
 
-      .save-button:hover {
+      .primary-button:hover {
         background: #333;
       }
 
       @media (prefers-color-scheme: dark) {
-        .save-button {
+        .primary-button {
           background: #f0f0f0;
           color: #111;
         }
-        .save-button:hover {
+        .primary-button:hover {
           background: #ccc;
         }
       }
@@ -194,8 +201,23 @@
         </p>
         <div class="pattern-list" id="patternList"></div>
         <button class="add-button" id="addbutton">+ Add pattern</button>
-        <button class="save-button" id="savebutton">Save</button>
+        <button class="primary-button" id="savebutton">Save</button>
         <div class="status" id="status"></div>
+      </div>
+      <div class="card">
+        <h2>Keyboard Shortcut</h2>
+        <p>You can change the keyboard shortcut in your browser settings.</p>
+        <ol>
+          <li>Click the button below</li>
+          <li>Find "MC* - Markdown Copy"</li>
+          <li>
+            Click the box next to "Copy page as markdown link" and press your
+            shortcut
+          </li>
+        </ol>
+        <button class="primary-button" id="shortcutButton">
+          ⌨ Set Shortcut
+        </button>
       </div>
     </div>
 
