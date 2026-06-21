@@ -57,6 +57,10 @@ const TOAST_FUNC = async (text: string, message: string) => {
 chrome.commands.onCommand.addListener((command) => {
   if (command !== "copy-markdown") return;
 
+  copyURLandTitle();
+});
+
+function copyURLandTitle() {
   chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     if (!tab) return;
 
@@ -104,4 +108,10 @@ chrome.commands.onCommand.addListener((command) => {
         });
     });
   });
+}
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "copyURLandTitle") {
+    const result = copyURLandTitle();
+  }
 });
