@@ -74,8 +74,6 @@ async function loadPatternsAsync(): Promise<string[]> {
 async function copyURLandTitle() {
   const listOfPatterns = await loadPatternsAsync();
 
-  console.log(listOfPatterns);
-
   let title = "empty title";
 
   chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
@@ -95,7 +93,6 @@ async function copyURLandTitle() {
       );
       return;
     }
-    // cast to your type
 
     for (const pattern of listOfPatterns) {
       try {

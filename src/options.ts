@@ -1,7 +1,13 @@
-const ids = ["patternList", "addbutton", "savebutton", "status"];
-const els = ids.map((id) => document.getElementById(id));
+const ids = [
+  "patternList",
+  "addbutton",
+  "savebutton",
+  "status",
+  "shortcutButton",
+];
+const elements = ids.map((id) => document.getElementById(id));
 
-if (els.some((el) => el === null)) {
+if (elements.some((el) => el === null)) {
   throw new Error("Missing element");
 }
 
@@ -9,6 +15,7 @@ const list = document.getElementById("patternList")!;
 const addbutton = document.getElementById("addbutton")!;
 const savebutton = document.getElementById("savebutton")!;
 const saveStatus = document.getElementById("status")!;
+const shortcutButton = document.getElementById("shortcutButton")!;
 
 function addRow(value = "") {
   const row = document.createElement("div");
@@ -59,10 +66,6 @@ savebutton.onclick = () => {
     setTimeout(() => (saveStatus.textContent = ""), 2000);
   });
 };
-
-const shortcutButton = document.getElementById("shortcutButton");
-
-if (!shortcutButton) throw new Error("Element not found");
 
 shortcutButton.onclick = () => {
   chrome.tabs.create({ url: "chrome://extensions/shortcuts" });
