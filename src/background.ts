@@ -83,6 +83,8 @@ async function copyURLandTitle() {
 
     const tabNumber = tab.id ?? 0;
 
+    title = tab.title ?? "empty title";
+
     if (
       tabURL.startsWith("chrome://") ||
       tabURL.startsWith("chrome-extension://") ||
