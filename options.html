@@ -34,10 +34,10 @@
         input::placeholder {
           color: #888;
         }
-        .remove-btn {
+        .remove-button {
           color: #ff6b6b;
         }
-        .remove-btn:hover {
+        .remove-button:hover {
           background: #3a2020;
         }
       }
@@ -58,6 +58,7 @@
         border: 1px solid #e0e0e0;
         border-radius: 12px;
         padding: 24px;
+        margin-bottom: 20px;
       }
 
       .card h2 {
@@ -66,16 +67,22 @@
         margin-bottom: 4px;
         color: #000;
       }
-      .card p {
+      .card p,
+      .card li {
         font-size: 13px;
         color: #666;
         margin-bottom: 16px;
       }
 
       @media (prefers-color-scheme: dark) {
-        .card p {
+        .card p,
+        .card li {
           color: #aaa;
         }
+      }
+
+      .card li {
+        margin-left: 12px;
       }
 
       .pattern-list {
@@ -105,7 +112,7 @@
         border-color: #888;
       }
 
-      .remove-btn {
+      .remove-button {
         background: none;
         border: none;
         cursor: pointer;
@@ -116,11 +123,11 @@
         line-height: 1;
       }
 
-      .remove-btn:hover {
+      .remove-button:hover {
         background: #fdecea;
       }
 
-      .add-btn {
+      .add-button {
         background: none;
         border: 1px dashed #aaa;
         border-radius: 8px;
@@ -133,23 +140,23 @@
         margin-bottom: 20px;
       }
 
-      .add-btn:hover {
+      .add-button:hover {
         border-color: #555;
         color: #111;
       }
 
       @media (prefers-color-scheme: dark) {
-        .add-btn {
-          color: #aaa;
+        .add-button {
+          color: #555;
           border-color: #555;
         }
-        .add-btn:hover {
+        .add-button:hover {
           border-color: #aaa;
-          color: #f0f0f0;
+          color: #111;
         }
       }
 
-      .save-btn {
+      .primary-button {
         background: #111;
         color: #fff;
         border: none;
@@ -160,16 +167,16 @@
         width: 100%;
       }
 
-      .save-btn:hover {
+      .primary-button:hover {
         background: #333;
       }
 
       @media (prefers-color-scheme: dark) {
-        .save-btn {
+        .primary-button {
           background: #f0f0f0;
           color: #111;
         }
-        .save-btn:hover {
+        .primary-button:hover {
           background: #ccc;
         }
       }
@@ -193,9 +200,24 @@
           case-insensitive.
         </p>
         <div class="pattern-list" id="patternList"></div>
-        <button class="add-btn" id="addBtn">+ Add pattern</button>
-        <button class="save-btn" id="saveBtn">Save</button>
+        <button class="add-button" id="addbutton">+ Add pattern</button>
+        <button class="primary-button" id="savebutton">Save</button>
         <div class="status" id="status"></div>
+      </div>
+      <div class="card">
+        <h2>Keyboard Shortcut</h2>
+        <p>You can change the keyboard shortcut in your browser settings.</p>
+        <ol>
+          <li>Click the button below</li>
+          <li>Find "MC* - Markdown Copy"</li>
+          <li>
+            Click the pencil icon next to "Copy page as markdown link" and press
+            your shortcut
+          </li>
+        </ol>
+        <button class="primary-button" id="shortcutButton">
+          ⌨ Set Shortcut
+        </button>
       </div>
     </div>
 

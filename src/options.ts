@@ -1,14 +1,21 @@
-const ids = ["patternList", "addBtn", "saveBtn", "status"];
-const els = ids.map((id) => document.getElementById(id));
+const ids = [
+  "patternList",
+  "addbutton",
+  "savebutton",
+  "status",
+  "shortcutButton",
+];
+const elements = ids.map((id) => document.getElementById(id));
 
-if (els.some((el) => el === null)) {
+if (elements.some((el) => el === null)) {
   throw new Error("Missing element");
 }
 
 const list = document.getElementById("patternList")!;
-const addBtn = document.getElementById("addBtn")!;
-const saveBtn = document.getElementById("saveBtn")!;
+const addbutton = document.getElementById("addbutton")!;
+const savebutton = document.getElementById("savebutton")!;
 const saveStatus = document.getElementById("status")!;
+const shortcutButton = document.getElementById("shortcutButton")!;
 
 function addRow(value = "") {
   const row = document.createElement("div");
@@ -19,38 +26,47 @@ function addRow(value = "") {
   input.placeholder = "e.g.  - YouTube";
   input.value = value;
 
-  const btn = document.createElement("button");
-  btn.className = "remove-btn";
-  btn.textContent = "×";
-  btn.title = "Remove";
-  btn.onclick = () => row.remove();
+  const button = document.createElement("button");
+  button.className = "remove-button";
+  button.textContent = "×";
+  button.title = "Remove";
+  button.onclick = () => row.remove();
 
   row.appendChild(input);
-  row.appendChild(btn);
+  row.appendChild(button);
   list.appendChild(row);
   input.focus();
   return row;
 }
 
-// Load saved patterns
-chrome.storage.sync.get({ cleanupPatterns: [] }, ({ rawCleanupPatterns }) => {
-  const listOfPatterns = rawCleanupPatterns as string[]; // cast to your type
-  if (listOfPatterns === undefined) {
-    addRow();
-  } else {
-    listOfPatterns.forEach((p) => addRow(p));
+async function loadPatterns() {
+  const rawPatterns = await chrome.storage.local.get("cleanupPatterns");
+
+  if (Object.keys(rawPatterns).length !== 0) {
+    const patternArray = rawPatterns.cleanupPatterns as string[];
+
+    patternArray.forEach((p) => addRow(p));
   }
-});
+  addRow();
+}
 
-addBtn.addEventListener("click", () => addRow());
+loadPatterns();
 
-saveBtn.addEventListener("click", () => {
+addbutton.onclick = () => {
+  addRow();
+};
+
+savebutton.onclick = () => {
   const patterns = [...list.querySelectorAll("input")]
     .map((i) => i.value.trim())
     .filter(Boolean);
 
-  chrome.storage.sync.set({ cleanupPatterns: patterns }, () => {
+  chrome.storage.local.set({ cleanupPatterns: patterns }, () => {
     saveStatus.textContent = "Saved!";
     setTimeout(() => (saveStatus.textContent = ""), 2000);
   });
-});
+};
+
+shortcutButton.onclick = () => {
+  chrome.tabs.create({ url: "chrome://extensions/shortcuts" });
+};
