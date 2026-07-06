@@ -59,3 +59,19 @@ copyButton.onclick = () => {
   window.close();
   chrome.runtime.sendMessage({ action: "copyURLandTitle" }, (response) => {});
 };
+
+let i = 0;
+let backgroundResponded = false;
+
+while (i < 5) {
+  if (backgroundResponded) {
+    break;
+  }
+  console.log("Wake up background try ", i + 1);
+  chrome.runtime.sendMessage({ action: "wakeUp" }, (response) => {
+    if (response === "backgroundAwake") {
+      backgroundResponded = true;
+    }
+  });
+  i += 1;
+}
