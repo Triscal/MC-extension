@@ -140,4 +140,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "copyURLandTitle") {
     const result = copyURLandTitle();
   }
+  if (message.action === "wakeUp") {
+    console.log("told to wake up");
+
+    console.log("sending sending wake up message");
+    sendResponse("backgroundAwake");
+  }
 });
