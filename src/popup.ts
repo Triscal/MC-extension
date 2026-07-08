@@ -55,7 +55,7 @@ const copyButton = document.getElementById("copyButton");
 
 if (!copyButton) throw new Error("Element not found");
 
-async function loadPatternsAsync(): Promise<string[]> {
+async function loadPatternsPopup(): Promise<string[]> {
   const rawPatterns = await chrome.storage.local.get("cleanupPatterns");
   if (Object.keys(rawPatterns).length !== 0) {
     const patternArray = rawPatterns.cleanupPatterns as string[];
@@ -67,12 +67,12 @@ async function loadPatternsAsync(): Promise<string[]> {
 }
 
 copyButton.onclick = async () => {
-   const listOfPatterns = await loadPatternsAsync();
+  const listOfPatterns = await loadPatternsPopup();
 
-   let md = "hi"
+  let md = "hi";
 
-  chrome.tabs.query({ active: true, currentWindow: true },([tab]) => {
-    setMessage("started", false)
+  chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
+    setMessage("started", false);
     if (!tab) return;
 
     const tabURL = tab.url ?? "";
@@ -87,7 +87,8 @@ copyButton.onclick = async () => {
       tabURL.startsWith("about:")
     ) {
       setMessage(
-        "Unable to copy browser settings and other internal pages", true
+        "Unable to copy browser settings and other internal pages",
+        true,
       );
       return;
     }
@@ -99,10 +100,9 @@ copyButton.onclick = async () => {
       } catch (e) {}
     }
     md = `[${title}](${tabURL})`;
-    setMessage("✅ Copied!", false)
-    writeToClipboard(md)
-});
-
+    setMessage("✅ Copied!", false);
+    writeToClipboard(md);
+  });
 };
 
 async function writeToClipboard(md: string) {
@@ -116,22 +116,6 @@ async function writeToClipboard(md: string) {
   }
 
   if (failed) {
-    setMessage("Writing to clipboard failed, please report a bug.", true)
+    setMessage("Writing to clipboard failed, please report a bug.", true);
   }
-}
-
-let i = 0;
-let backgroundResponded = false;
-
-while (i < 5) {
-  if (backgroundResponded) {
-    break;
-  }
-  console.log("Wake up background try ", i + 1);
-  chrome.runtime.sendMessage({ action: "wakeUp" }, (response) => {
-    if (response === "backgroundAwake") {
-      backgroundResponded = true;
-    }
-  });
-  i += 1;
 }
