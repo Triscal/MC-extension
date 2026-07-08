@@ -69,7 +69,7 @@ async function loadPatternsPopup(): Promise<string[]> {
 copyButton.onclick = async () => {
   const listOfPatterns = await loadPatternsPopup();
 
-  let md = "hi";
+  let md = "";
 
   chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     setMessage("started", false);
@@ -80,18 +80,6 @@ copyButton.onclick = async () => {
     const tabNumber = tab.id ?? 0;
 
     let title = tab.title ?? "empty title";
-
-    if (
-      tabURL.startsWith("chrome://") ||
-      tabURL.startsWith("chrome-extension://") ||
-      tabURL.startsWith("about:")
-    ) {
-      setMessage(
-        "Unable to copy browser settings and other internal pages",
-        true,
-      );
-      return;
-    }
 
     for (const pattern of listOfPatterns) {
       try {

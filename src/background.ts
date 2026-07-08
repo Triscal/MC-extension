@@ -1,28 +1,15 @@
 function showErrorBadge(message: string) {
   chrome.action.setBadgeText({ text: "!" });
   chrome.action.setBadgeBackgroundColor({ color: "#c00" });
-  chrome.action.setTitle({ title: message });
   chrome.storage.local.set({ lastError: message });
 }
 
 function clearBadge() {
   chrome.action.setBadgeText({ text: "" });
-  chrome.action.setTitle({ title: "MC* - Markdown Copy" });
   chrome.storage.local.set({ lastError: null });
 }
 
-const TOAST_FUNC = async (text: string, message: string) => {
-  let failed = false;
-  if (text) {
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch (e) {
-      failed = true;
-    }
-  }
-
-  if (failed) return false;
-
+const TOAST_FUNC = async (message: string) => {
   const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   const host = document.createElement("div");
   host.style.cssText = `
@@ -84,7 +71,7 @@ async function loadPatternsAsync(): Promise<string[]> {
 async function copyURLandTitle() {
   const listOfPatterns = await loadPatternsAsync();
 
-  chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
+  chrome.tabs.query({ active: true, currentWindow: true }, async ([tab]) => {
     if (!tab) return;
 
     const tabURL = tab.url ?? "";
@@ -99,7 +86,7 @@ async function copyURLandTitle() {
       tabURL.startsWith("about:")
     ) {
       showErrorBadge(
-        "Unable to copy browser settings and other internal pages",
+        "Only able to copy internal pages from the pop-up, click the Copy page title and URL button above.",
       );
       return;
     }
@@ -115,35 +102,34 @@ async function copyURLandTitle() {
     chrome.scripting
       .executeScript({
         target: { tabId: tabNumber },
-        func: TOAST_FUNC,
-        args: [md, "✅ Copied!"],
+        func: writeToClipboardBackground,
+        args: [md],
       })
       .then((results) => {
         const success = results?.[0]?.result;
-        if (!success) {
-          showErrorBadge(
-            "⚠️ Can't copy while the web address is being edited. Please click somewhere on the page and try again.",
-          );
-        } else {
+        if (success) {
           clearBadge();
+          chrome.scripting.executeScript({
+            target: { tabId: tabNumber },
+            func: TOAST_FUNC,
+            args: ["✅ Copied!"],
+          });
         }
       })
-      .catch(() => {
-        showErrorBadge(
-          "⚠️ Can't copy while the web address is being edited. Please click somewhere on the page and try again.",
-        );
+      .catch((e: any) => {
+        showErrorBadge(e.message);
       });
   });
 }
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === "copyURLandTitle") {
-    const result = copyURLandTitle();
+const writeToClipboardBackground = async (md: string) => {
+  if (md) {
+    try {
+      await navigator.clipboard.writeText(md);
+    } catch (e: any) {
+      showErrorBadge(e.message);
+      return false;
+    }
   }
-  if (message.action === "wakeUp") {
-    console.log("told to wake up");
-
-    console.log("sending sending wake up message");
-    sendResponse("backgroundAwake");
-  }
-});
+  return true;
+};
