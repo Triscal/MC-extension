@@ -18,12 +18,12 @@ function setMessage(message: string, isError: Boolean) {
       chrome.storage.local.set({ lastError: null });
       chrome.action.setBadgeText({ text: "" });
       chrome.action.setTitle({ title: "MC* - Markdown Copy" });
-      content.innerHTML = `<p class="no-error">No recent errors.</p>`;
+      content.innerHTML = `<p class="no-error">no recent errors</p>`;
       button.remove();
     };
     content.appendChild(button);
   } else {
-    content.innerHTML = `<p class="no-error">No recent errors.</p>`;
+    content.innerHTML = `<p class="no-error">${message}</p>`;
   }
 }
 
@@ -55,10 +55,70 @@ const copyButton = document.getElementById("copyButton");
 
 if (!copyButton) throw new Error("Element not found");
 
-copyButton.onclick = () => {
-  window.close();
-  chrome.runtime.sendMessage({ action: "copyURLandTitle" }, (response) => {});
+async function loadPatternsAsync(): Promise<string[]> {
+  const rawPatterns = await chrome.storage.local.get("cleanupPatterns");
+  if (Object.keys(rawPatterns).length !== 0) {
+    const patternArray = rawPatterns.cleanupPatterns as string[];
+
+    return patternArray;
+  }
+
+  return [];
+}
+
+copyButton.onclick = async () => {
+   const listOfPatterns = await loadPatternsAsync();
+
+   let md = "hi"
+
+  chrome.tabs.query({ active: true, currentWindow: true },([tab]) => {
+    setMessage("started", false)
+    if (!tab) return;
+
+    const tabURL = tab.url ?? "";
+
+    const tabNumber = tab.id ?? 0;
+
+    let title = tab.title ?? "empty title";
+
+    if (
+      tabURL.startsWith("chrome://") ||
+      tabURL.startsWith("chrome-extension://") ||
+      tabURL.startsWith("about:")
+    ) {
+      setMessage(
+        "Unable to copy browser settings and other internal pages", true
+      );
+      return;
+    }
+
+    for (const pattern of listOfPatterns) {
+      try {
+        const escaped = pattern.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        title = title.replace(new RegExp(escaped + "\\s*$", "gi"), "").trim();
+      } catch (e) {}
+    }
+    md = `[${title}](${tabURL})`;
+    setMessage("✅ Copied!", false)
+    writeToClipboard(md)
+});
+
 };
+
+async function writeToClipboard(md: string) {
+  let failed = false;
+  if (md) {
+    try {
+      await navigator.clipboard.writeText(md);
+    } catch (e) {
+      failed = true;
+    }
+  }
+
+  if (failed) {
+    setMessage("Writing to clipboard failed, please report a bug.", true)
+  }
+}
 
 let i = 0;
 let backgroundResponded = false;
