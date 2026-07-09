@@ -114,10 +114,18 @@ async function copyURLandTitle() {
             func: TOAST_FUNC,
             args: ["✅ Copied!"],
           });
+        } else {
+          showErrorBadge(
+            "Copy failed make sure you are not editing the web address.",
+          );
         }
       })
-      .catch((e: any) => {
-        showErrorBadge(e.message);
+      .catch((error: unknown) => {
+        if (error instanceof Error) {
+          console.error("MC* -", error.message);
+        } else {
+          console.error("MC* - unknown error: ", error);
+        }
       });
   });
 }
@@ -126,8 +134,12 @@ const writeToClipboardBackground = async (md: string) => {
   if (md) {
     try {
       await navigator.clipboard.writeText(md);
-    } catch (e: any) {
-      showErrorBadge(e.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("MC* -", error.message);
+      } else {
+        console.error("MC* - unknown error: ", error);
+      }
       return false;
     }
   }
