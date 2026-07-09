@@ -71,7 +71,7 @@ async function loadPatternsAsync(): Promise<string[]> {
 async function copyURLandTitle() {
   const listOfPatterns = await loadPatternsAsync();
 
-  chrome.tabs.query({ active: true, currentWindow: true }, async ([tab]) => {
+  chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
     if (!tab) return;
 
     const tabURL = tab.url ?? "";
