@@ -18,12 +18,12 @@ function setMessage(message: string, isError: Boolean) {
       chrome.storage.local.set({ lastError: null });
       chrome.action.setBadgeText({ text: "" });
       chrome.action.setTitle({ title: "MC* - Markdown Copy" });
-      content.innerHTML = `<p class="no-error">No recent errors.</p>`;
+      content.innerHTML = `<p class="no-error">no recent errors</p>`;
       button.remove();
     };
     content.appendChild(button);
   } else {
-    content.innerHTML = `<p class="no-error">No recent errors.</p>`;
+    content.innerHTML = `<p class="no-error">${message}</p>`;
   }
 }
 
@@ -55,23 +55,55 @@ const copyButton = document.getElementById("copyButton");
 
 if (!copyButton) throw new Error("Element not found");
 
-copyButton.onclick = () => {
-  window.close();
-  chrome.runtime.sendMessage({ action: "copyURLandTitle" }, (response) => {});
+async function loadPatternsPopup(): Promise<string[]> {
+  const rawPatterns = await chrome.storage.local.get("cleanupPatterns");
+  if (Object.keys(rawPatterns).length !== 0) {
+    const patternArray = rawPatterns.cleanupPatterns as string[];
+
+    return patternArray;
+  }
+
+  return [];
+}
+
+copyButton.onclick = async () => {
+  const listOfPatterns = await loadPatternsPopup();
+
+  let md = "";
+
+  chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
+    setMessage("started", false);
+    if (!tab) return;
+
+    const tabURL = tab.url ?? "";
+
+    const tabNumber = tab.id ?? 0;
+
+    let title = tab.title ?? "empty title";
+
+    for (const pattern of listOfPatterns) {
+      try {
+        const escaped = pattern.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        title = title.replace(new RegExp(escaped + "\\s*$", "gi"), "").trim();
+      } catch (e) {}
+    }
+    md = `[${title}](${tabURL})`;
+    setMessage("✅ Copied!", false);
+    writeToClipboard(md);
+  });
 };
 
-let i = 0;
-let backgroundResponded = false;
-
-while (i < 5) {
-  if (backgroundResponded) {
-    break;
-  }
-  console.log("Wake up background try ", i + 1);
-  chrome.runtime.sendMessage({ action: "wakeUp" }, (response) => {
-    if (response === "backgroundAwake") {
-      backgroundResponded = true;
+async function writeToClipboard(md: string) {
+  let failed = false;
+  if (md) {
+    try {
+      await navigator.clipboard.writeText(md);
+    } catch (e) {
+      failed = true;
     }
-  });
-  i += 1;
+  }
+
+  if (failed) {
+    setMessage("Writing to clipboard failed, please report a bug.", true);
+  }
 }
