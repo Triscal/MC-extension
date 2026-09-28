@@ -1,0 +1,8 @@
+- name: Load secrets from 1Password
+  uses: 1Password/load-secrets-action@v5
+  with:
+    export-env: true
+  env:
+    OP_WORKLOAD_ID: "4LDL6GRCH5CDVCXW4VCUCX6FGM"
+    OP_ENVIRONMENT_ID: "m7tajxoidkcbyiqzuxpacinhwm"
+    OP_INTEGRATION_KEY: ${{ secrets.OP_INTEGRATION_KEY }}
