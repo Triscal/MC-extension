@@ -8,16 +8,40 @@ on:
 
 
 jobs:
-  oidctest:
+  test-secrets:
     runs-on: ubuntu-latest
+    environment: test
     permissions:
-      id-token: write
       contents: read
+      id-token: write # Required for GitHub to issue the OIDC token
+
     steps:
-     - uses: 1Password/load-secrets-action@v5
-       with:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Inspect OIDC Token Claims
+        run: |
+          ACTIONS_TOKEN=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=https://1password.com" | jq -r '.value')
+          
+          # Extract and decode the JWT payload
+          echo "$ACTIONS_TOKEN" | cut -d'.' -f2 | base64 --decode | jq .
+
+      - name: Load secrets from 1Password
+        uses: 1password/load-secrets-action@v5
+        with:
           export-env: true
-       env:
+        env:
           OP_WORKLOAD_ID: "4LDL6GRCH5CDVCXW4VCUCX6FGM"
           OP_ENVIRONMENT_ID: "m7tajxoidkcbyiqzuxpacinhwm"
           OP_INTEGRATION_KEY: ${{ secrets.OP_INTEGRATION_KEY }}
+
+      - name: Verify Environment Variable
+        run: |
+          if [ -n "$MY_VARIABLE" ]; then
+            echo "MY_VARIABLE was loaded successfully from 1Password Environment."
+          else
+            echo "MY_VARIABLE is empty or missing."
+            exit 1
+          fi
+      
