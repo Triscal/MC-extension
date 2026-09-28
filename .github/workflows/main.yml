@@ -8,8 +8,11 @@ on:
 
 
 jobs:
-  build:
+  oidctest:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
      - uses: 1Password/load-secrets-action@v5
        with:
